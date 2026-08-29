@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Süreci İzle — ELSC</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Archivo:wght@700;800;900&family=JetBrains+Mono:wght@700;800&display=swap');
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body { background: #0a0a0b; min-height: 100vh; }
+
+  body {
+    font-family: 'Archivo', sans-serif;
+    font-weight: 800;
+    color: #f5f4f2;
+    position: relative;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  p, span, a, div, li { font-weight: 700; }
+  .mono { font-family: 'JetBrains Mono', monospace; font-weight: 700; }
+
+  a { text-decoration: none; color: inherit; }
+
+  /* ---------- background ---------- */
+  .bg-field {
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background:
+      radial-gradient(1000px 650px at 50% -10%, rgba(255,255,255,0.05), transparent 60%),
+      radial-gradient(800px 500px at 100% 100%, rgba(255,255,255,0.03), transparent 60%),
+      #0a0a0b;
+  }
+
+  .noise {
+    position: fixed; inset: 0; pointer-events: none; opacity: 0.05; z-index: 45; mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  .top-accent {
+    position: fixed; top: 0; left: 0; right: 0; height: 3px; z-index: 60;
+    background: linear-gradient(90deg, #2a2a2c, #d4d4d8, #2a2a2c);
+    background-size: 200% 100%;
+    animation: shimmer 3s linear infinite;
+  }
+  @keyframes shimmer { to { background-position: -200% 0; } }
+  @media (prefers-reduced-motion: reduce) { .top-accent { animation: none; } }
+
+  /* ---------- layout ---------- */
+  .wrap {
+    position: relative; z-index: 10;
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 0 1.25rem 5rem;
+  }
+
+  .topbar {
+    display: flex; flex-direction: column; align-items: center; gap: 1.25rem;
+    padding: 2.25rem 0 3.5rem;
+  }
+  .wordmark { font-size: 15px; letter-spacing: 0.02em; display: flex; align-items: center; gap: 2px; }
+  .wordmark span { color: rgba(255,255,255,0.3); }
+
+  .back-link {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 12px; letter-spacing: 0.04em; color: rgba(255,255,255,0.45);
+    transition: color 0.2s ease;
+  }
+  .back-link:hover { color: rgba(255,255,255,0.85); }
+
+  .status-pill {
+    display: flex; align-items: center; gap: 8px;
+    padding: 7px 14px 7px 10px;
+    border-radius: 999px;
+    border: 1px solid rgba(255,255,255,0.15);
+    background: rgba(255,255,255,0.04);
+  }
+  .pulse-dot {
+    width: 7px; height: 7px; border-radius: 999px; background: #e5e5e7;
+    animation: pulse 1.8s ease-out infinite;
+  }
+  @keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(255,255,255,0.35); }
+    70% { box-shadow: 0 0 0 9px rgba(255,255,255,0); }
+    100% { box-shadow: 0 0 0 0 rgba(255,255,255,0); }
+  }
+  @media (prefers-reduced-motion: reduce) { .pulse-dot { animation: none; } }
+  .status-pill span { font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: #d4d4d8; font-family: 'JetBrains Mono'; font-weight: 800; }
+
+  /* ---------- hero ---------- */
+  .hero { text-align: center; margin-bottom: 4rem; }
+  .eyebrow {
+    font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase;
+    color: rgba(255,255,255,0.45); font-family: 'JetBrains Mono'; font-weight: 800;
+    margin-bottom: 1.5rem;
+    display: flex; align-items: center; justify-content: center; gap: 12px;
+  }
+  .eyebrow .line { width: 28px; height: 2px; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent); }
+
+  .headline {
+    font-size: clamp(2.2rem, 7vw, 3.4rem);
+    font-weight: 900;
+    line-height: 1.04;
+    letter-spacing: -0.03em;
+    margin-bottom: 1.25rem;
+  }
+  .headline .fade { background: linear-gradient(180deg, #fff, rgba(255,255,255,0.4)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+
+  .sub {
+    font-size: 15px; line-height: 1.7; color: rgba(255,255,255,0.5);
+    font-family: 'Archivo'; font-weight: 600;
+    max-width: 480px; margin: 0 auto;
+  }
+
+  /* ---------- timeline ---------- */
+  .timeline { position: relative; padding-left: 2.25rem; }
+  .timeline::before {
+    content: '';
+    position: absolute; left: 8px; top: 10px; bottom: 10px; width: 1px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.25), rgba(255,255,255,0.05));
+  }
+
+  .t-item {
+    position: relative;
+    margin-bottom: 2.75rem;
+    opacity: 0;
+    animation: rise 0.6s cubic-bezier(0.16,1,0.3,1) forwards;
+  }
+  .t-item:nth-child(1) { animation-delay: 0.1s; }
+  .t-item:nth-child(2) { animation-delay: 0.25s; }
+  .t-item:nth-child(3) { animation-delay: 0.4s; }
+  .t-item:last-child { margin-bottom: 0; }
+
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .t-item { animation: none; opacity: 1; }
+  }
+
+  .t-dot {
+    position: absolute; left: -2.25rem; top: 6px;
+    width: 17px; height: 17px; border-radius: 999px;
+    background: #0a0a0b;
+    border: 1px solid rgba(255,255,255,0.25);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .t-dot::after {
+    content: ''; width: 7px; height: 7px; border-radius: 999px; background: #e5e5e7;
+  }
+  .t-item.latest .t-dot {
+    border-color: rgba(255,255,255,0.6);
+    box-shadow: 0 0 0 4px rgba(255,255,255,0.06);
+  }
+  .t-item.latest .t-dot::after { background: #fff; }
+
+  .t-card {
+    border-radius: 18px;
+    border: 1px solid rgba(255,255,255,0.1);
+    background: linear-gradient(155deg, rgba(255,255,255,0.035), rgba(255,255,255,0.005));
+    padding: 1.5rem 1.5rem 1.65rem;
+  }
+  .t-item.latest .t-card {
+    border-color: rgba(255,255,255,0.18);
+    background: linear-gradient(155deg, rgba(255,255,255,0.06), rgba(255,255,255,0.01));
+  }
+
+  .t-meta {
+    display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem;
+    margin-bottom: 0.85rem;
+  }
+  .t-date {
+    font-family: 'JetBrains Mono'; font-size: 11px; font-weight: 800;
+    letter-spacing: 0.08em; color: rgba(255,255,255,0.4);
+  }
+  .t-tag {
+    font-family: 'JetBrains Mono'; font-size: 10px; font-weight: 800;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    padding: 3px 9px; border-radius: 999px;
+    border: 1px solid rgba(255,255,255,0.15); color: rgba(255,255,255,0.55);
+  }
+  .t-item.latest .t-tag {
+    border-color: rgba(255,255,255,0.4); color: #fff; background: rgba(255,255,255,0.06);
+  }
+
+  .t-title { font-size: 17px; font-weight: 800; color: #fff; margin-bottom: 0.6rem; letter-spacing: -0.01em; }
+  .t-body { font-size: 13.5px; line-height: 1.7; color: rgba(255,255,255,0.5); font-family: 'Archivo'; font-weight: 600; }
+
+  /* ---------- footer cta ---------- */
+  .cta-box {
+    margin-top: 4.5rem;
+    border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.1);
+    background: rgba(255,255,255,0.02);
+    padding: 2.25rem 1.75rem;
+    text-align: center;
+  }
+  .cta-box h3 { font-size: 18px; font-weight: 800; margin-bottom: 0.6rem; }
+  .cta-box p { font-size: 13px; color: rgba(255,255,255,0.45); font-family: 'Archivo'; font-weight: 600; line-height: 1.6; max-width: 380px; margin: 0 auto 1.5rem; }
+
+  .btn-primary {
+    display: inline-flex; align-items: center; gap: 9px;
+    padding: 14px 24px;
+    background: #fff; color: #000;
+    font-size: 13px; letter-spacing: 0.01em;
+    border-radius: 11px;
+    box-shadow: 0 8px 24px -6px rgba(255,255,255,0.2);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 30px -6px rgba(255,255,255,0.3); }
+
+  footer.page-footer {
+    position: relative; z-index: 10;
+    text-align: center;
+    padding: 2.5rem 1.25rem 0;
+  }
+  footer.page-footer p {
+    font-family: 'JetBrains Mono'; font-size: 10px; letter-spacing: 0.05em;
+    color: rgba(255,255,255,0.25); font-weight: 700; margin-bottom: 0.4rem;
+  }
+</style>
+</head>
+<body>
+
+<div class="top-accent"></div>
+<div class="bg-field"></div>
+<div class="noise"></div>
+
+<div class="wrap">
+
+  <div class="topbar">
+    <a href="./elsc-animasyonlu.html" class="back-link">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      Ana sayfaya dön
+    </a>
+    <div class="wordmark">ELSC<span>.</span></div>
+    <div class="status-pill">
+      <span class="pulse-dot"></span>
+      <span>Süreç Devam Ediyor</span>
+    </div>
+  </div>
+
+  <div class="hero">
+    <p class="eyebrow"><span class="line"></span>Duyurular · Güncel Gelişmeler<span class="line"></span></p>
+    <h1 class="headline">Süreci<br/><span class="fade">buradan izleyin.</span></h1>
+    <p class="sub">
+      Erişim kısıtlamasına ilişkin dava süreciyle ilgili gelişmeler bu sayfada
+      kronolojik olarak yayınlanır. Sayfa düzenli aralıklarla güncellenmektedir.
+    </p>
+  </div>
+
+  <div class="timeline">
+
+    <div class="t-item latest">
+      <div class="t-dot"></div>
+      <div class="t-card">
+        <div class="t-meta">
+          <span class="t-date">29 AĞUSTOS 2026</span>
+          <span class="t-tag">Son Gelişme</span>
+        </div>
+        <h3 class="t-title">Bilirkişi incelemesi tamamlandı, karar aşamasına geçildi</h3>
+        <p class="t-body">
+          Veri güvenliği incelemesi kapsamında atanan bilirkişi heyeti raporunu mahkemeye
+          sunmuştur. Dosya, nihai karar için değerlendirme aşamasına alınmıştır. Kararın
+          önümüzdeki günler içinde açıklanması beklenmektedir.
+        </p>
+      </div>
+    </div>
+
+    <div class="t-item">
+      <div class="t-dot"></div>
+      <div class="t-card">
+        <div class="t-meta">
+          <span class="t-date">14 AĞUSTOS 2026</span>
+          <span class="t-tag">İnceleme</span>
+        </div>
+        <h3 class="t-title">Bağımsız bilirkişi heyeti dosyayı devraldı</h3>
+        <p class="t-body">
+          Mahkeme tarafından atanan bağımsız bilirkişi heyeti, veri güvenliği altyapısı
+          üzerinde teknik incelemeye başlamıştır. Bu süre zarfında erişim kısıtlaması
+          aynen devam etmektedir.
+        </p>
+      </div>
+    </div>
+
+    <div class="t-item">
+      <div class="t-dot"></div>
+      <div class="t-card">
+        <div class="t-meta">
+          <span class="t-date">2 AĞUSTOS 2026</span>
+          <span class="t-tag">Süreç Başlangıcı</span>
+        </div>
+        <h3 class="t-title">KVKK kapsamında erişim geçici olarak kısıtlandı</h3>
+        <p class="t-body">
+          6698 sayılı Kişisel Verilerin Korunması Kanunu'nun 12. maddesi uyarınca
+          başlatılan veri güvenliği incelemesi nedeniyle elscservice.store'a erişim
+          geçici olarak durdurulmuş, ilgili dava süreci resmen başlamıştır.
+        </p>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="cta-box">
+    <h3>Güncellemeleri kaçırmayın</h3>
+    <p>Süreçle ilgili yeni bir gelişme olduğunda bu sayfa güncellenecektir. Sorularınız için ana sayfadaki iletişim bilgilerini kullanabilirsiniz.</p>
+    <a href="./elsc-animasyonlu.html" class="btn-primary">
+      Ana Sayfaya Dön
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+    </a>
+  </div>
+
+</div>
+
+<footer class="page-footer">
+  <p>© 2026 ELSC ANONİM ŞİRKETİ — TÜM HAKLARI SAKLIDIR</p>
+  <p>elscservice.store · SAYFA OTOMATİK OLARAK GÜNCELLENİR</p>
+</footer>
+
+</body>
+</html>
