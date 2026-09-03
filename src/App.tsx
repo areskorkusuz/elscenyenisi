@@ -4,6 +4,9 @@ import GlowRings from "@/components/GlowRings";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
+// Fixed target so the countdown stays consistent across reloads.
+const TARGET_DATE = new Date("2026-09-15T12:00:00+03:00");
+
 function useCountdown(target: Date) {
   const [left, setLeft] = useState(() => target.getTime() - Date.now());
   useEffect(() => {
@@ -37,8 +40,7 @@ function TimeBlock({ value, label }: { value: number; label: string }) {
 }
 
 function Hero() {
-  const target = new Date(Date.now() + 1000 * 60 * 60 * 41 + 1000 * 60 * 12);
-  const { d, h, m, s } = useCountdown(target);
+  const { d, h, m, s } = useCountdown(TARGET_DATE);
 
   return (
     <header className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden px-6 py-24 text-center">
