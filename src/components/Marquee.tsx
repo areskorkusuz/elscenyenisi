@@ -9,7 +9,7 @@ export default function Marquee({ items }: { items: string[] }) {
             className="flex items-center gap-10 text-[11px] font-extrabold uppercase tracking-[0.2em] text-white/35"
           >
             {t}
-            <span className="text-red-600">✦</span>
+            <span className="text-white/40">✦</span>
           </span>
         ))}
       </div>

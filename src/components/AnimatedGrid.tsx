@@ -63,8 +63,8 @@ export default function AnimatedGrid() {
         const alpha = Math.max(0, 0.35 - p.life * 0.35);
         if (alpha <= 0) return;
         const grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, r);
-        grad.addColorStop(0, `rgba(255,45,45,${alpha})`);
-        grad.addColorStop(1, "rgba(255,45,45,0)");
+        grad.addColorStop(0, `rgba(255,255,255,${alpha})`);
+        grad.addColorStop(1, "rgba(255,255,255,0)");
         ctx.fillStyle = grad;
         ctx.fillRect(p.x - r, p.y - r, r * 2, r * 2);
       });

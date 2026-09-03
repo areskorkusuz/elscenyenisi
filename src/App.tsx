@@ -46,7 +46,7 @@ function TimeBlock({ value, label }: { value: number; label: string }) {
 function CursorGlowHero() {
   const mx = useMotionValue(0);
   const my = useMotionValue(0);
-  const bg = useMotionTemplate`radial-gradient(600px circle at ${mx}px ${my}px, rgba(255,45,45,0.14), transparent 65%)`;
+  const bg = useMotionTemplate`radial-gradient(600px circle at ${mx}px ${my}px, rgba(255,255,255,0.08), transparent 65%)`;
 
   return (
     <motion.div
@@ -78,14 +78,14 @@ function HeroContent() {
       >
         <div className="flex items-center gap-2">
           <span className="text-lg font-black tracking-tight text-white">ELSC</span>
-          <span className="text-lg font-black text-red-600">.</span>
+          <span className="text-lg font-black text-white/60">.</span>
         </div>
-        <div className="flex items-center gap-2 rounded-full border border-red-500/30 bg-red-500/10 py-1.5 pl-2.5 pr-3.5">
+        <div className="flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.04] py-1.5 pl-2.5 pr-3.5">
           <span className="relative flex h-2 w-2">
-            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-500 opacity-75" />
-            <span className="relative inline-flex h-2 w-2 rounded-full bg-red-500" />
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-white/60 opacity-75" />
+            <span className="relative inline-flex h-2 w-2 rounded-full bg-white/80" />
           </span>
-          <span className="text-[10px] font-extrabold uppercase tracking-[0.14em] text-red-300 sm:text-[11px]">
+          <span className="text-[10px] font-extrabold uppercase tracking-[0.14em] text-white/60 sm:text-[11px]">
             Sistem Devre Dışı
           </span>
         </div>
@@ -98,7 +98,7 @@ function HeroContent() {
         transition={{ duration: 0.6, delay: 0.1, ease: EASE }}
         className="mb-6 flex items-center gap-3"
       >
-        <span className="h-[2px] w-7 bg-gradient-to-r from-red-500 to-transparent" />
+        <span className="h-[2px] w-7 bg-gradient-to-r from-white/50 to-transparent" />
         <span className="font-sans text-[11px] font-extrabold uppercase tracking-[0.22em] text-white/45">
           KVKK · 6698 Sayılı Kanun · Erişim Kısıtlaması
         </span>
@@ -113,7 +113,7 @@ function HeroContent() {
       >
         Şu an
         <br />
-        <span className="bg-gradient-to-r from-white via-white/60 to-red-600 bg-clip-text text-transparent">
+        <span className="bg-gradient-to-r from-white via-white/70 to-white/30 bg-clip-text text-transparent">
           kapalıyız.
         </span>
       </motion.h1>
@@ -155,7 +155,7 @@ function HeroContent() {
       >
         <MagneticButton
           href="mailto:kvkk@elsc.com.tr"
-          className="group flex items-center gap-2.5 rounded-xl bg-gradient-to-br from-red-500 to-red-800 px-7 py-4 text-sm font-extrabold text-white shadow-[0_8px_24px_-6px_rgba(255,45,45,0.5)] transition-shadow hover:shadow-[0_12px_32px_-6px_rgba(255,45,45,0.65)]"
+          className="group flex items-center gap-2.5 rounded-xl bg-white px-7 py-4 text-sm font-extrabold text-black shadow-[0_8px_24px_-6px_rgba(255,255,255,0.25)] transition-shadow hover:shadow-[0_12px_32px_-6px_rgba(255,255,255,0.4)]"
         >
           kvkk@elsc.com.tr
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="transition-transform group-hover:translate-x-0.5">
@@ -217,7 +217,7 @@ function InfoSection() {
       <div className="grid grid-cols-1 gap-px sm:grid-cols-2 lg:grid-cols-4">
         {infoCards.map((c, i) => (
           <SpotlightCard key={c.n} index={i} className="rounded-2xl p-6">
-            <div className="mb-8 font-mono text-xs font-extrabold text-red-500">{c.n}</div>
+            <div className="mb-8 font-mono text-xs font-extrabold text-white/40">{c.n}</div>
             <h3 className="mb-2.5 text-lg font-extrabold text-white">{c.title}</h3>
             <p className="text-[13.5px] font-semibold leading-relaxed text-white/45">{c.body}</p>
           </SpotlightCard>
@@ -239,7 +239,7 @@ function StatsSection() {
         >
           <div className="text-3xl font-black text-white sm:text-4xl">
             <Counter value={128} />
-            <span className="text-red-500">bin+</span>
+            <span className="text-white/50">bin+</span>
           </div>
           <p className="mt-1.5 text-[11px] font-extrabold uppercase tracking-[0.12em] text-white/35">
             Korunan Kullanıcı Kaydı
@@ -280,12 +280,12 @@ export default function App() {
   return (
     <div className="relative min-h-screen overflow-hidden bg-[#0a0a0b] font-sans text-white">
       {/* fixed top progress shimmer */}
-      <div className="fixed inset-x-0 top-0 z-50 h-[3px] animate-[shimmer_3s_linear_infinite] bg-[length:200%_100%] bg-gradient-to-r from-red-900 via-red-500 to-red-900" />
+      <div className="fixed inset-x-0 top-0 z-50 h-[3px] animate-[shimmer_3s_linear_infinite] bg-[length:200%_100%] bg-gradient-to-r from-white/10 via-white/50 to-white/10" />
 
       {/* ambient radial glows */}
       <div className="pointer-events-none absolute inset-0 z-0">
-        <div className="absolute -top-40 right-[-10%] h-[600px] w-[700px] rounded-full bg-red-600/10 blur-[120px]" />
-        <div className="absolute bottom-[-20%] left-[-10%] h-[500px] w-[600px] rounded-full bg-red-900/10 blur-[120px]" />
+        <div className="absolute -top-40 right-[-10%] h-[600px] w-[700px] rounded-full bg-white/[0.06] blur-[120px]" />
+        <div className="absolute bottom-[-20%] left-[-10%] h-[500px] w-[600px] rounded-full bg-white/[0.04] blur-[120px]" />
       </div>
 
       <div className="pointer-events-none absolute inset-0 z-0">
