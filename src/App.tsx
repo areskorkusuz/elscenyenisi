@@ -59,7 +59,7 @@ function Hero() {
         </h1>
 
         <p className="mt-8 max-w-xl text-base leading-relaxed text-[#8A8A85] sm:text-lg">
-          elsc.com.tr, Kişisel Verilerin Korunması Kanunu kapsamında yürütülen
+          elscservice.store, Kişisel Verilerin Korunması Kanunu kapsamında yürütülen
           bir veri güvenliği incelemesi nedeniyle geçici olarak erişime
           kapatılmıştır. İnceleme tamamlandığında sistem yeniden açılacaktır.
         </p>
@@ -75,10 +75,10 @@ function Hero() {
         </div>
 
         <a
-          href="mailto:kvkk@elsc.com.tr"
+          href="mailto:kvkk@elscservice.store"
           className="mt-14 border-b border-[#3A3A38] pb-1 text-sm text-[#F5F5F0] outline-offset-4 transition-colors hover:border-[#F5F5F0] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#5B6EF5]"
         >
-          kvkk@elsc.com.tr
+          kvkk@elscservice.store
         </a>
       </motion.div>
     </header>
