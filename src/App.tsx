@@ -91,6 +91,8 @@ function HeroContent() {
         </div>
       </motion.header>
 
+      <div className="mx-auto max-w-3xl lg:mx-0">
+
       {/* eyebrow */}
       <motion.div
         initial={{ opacity: 0, x: -16 }}
@@ -169,6 +171,7 @@ function HeroContent() {
           Detayları Gör
         </MagneticButton>
       </motion.div>
+      </div>
     </div>
   );
 }
